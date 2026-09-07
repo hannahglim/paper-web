@@ -1,0 +1,180 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  /* Soft blurry pink dot used as the local user's cursor everywhere. */
+  --cursor-pink: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='26' height='26'><defs><radialGradient id='g' cx='0.5' cy='0.5' r='0.5'><stop offset='0' stop-color='%23ff2e8a' stop-opacity='0.95'/><stop offset='0.35' stop-color='%23ff2e8a' stop-opacity='0.55'/><stop offset='1' stop-color='%23ff2e8a' stop-opacity='0'/></radialGradient></defs><rect width='26' height='26' fill='url(%23g)'/></svg>") 13 13;
+  --cursor-pink-grab: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><radialGradient id='g' cx='0.5' cy='0.5' r='0.5'><stop offset='0' stop-color='%23ff2e8a' stop-opacity='1'/><stop offset='0.35' stop-color='%23ff2e8a' stop-opacity='0.6'/><stop offset='1' stop-color='%23ff2e8a' stop-opacity='0'/></radialGradient></defs><rect width='32' height='32' fill='url(%23g)'/></svg>") 16 16;
+}
+
+html {
+  overflow-x: clip;
+  color-scheme: light;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: #f4f1ea;
+  cursor: var(--cursor-pink), auto;
+}
+
+/* Background paper grain (always behind photos, in the gaps between them). */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.3;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.75  0 0 0 0 0.72  0 0 0 0 0.68  0 0 0 6 -4.2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  background-repeat: repeat;
+}
+
+/* Vignette frame: fixed to the viewport, above the photos. Transparent in
+   the center so photos read clearly, fades to opaque off-white + grain at
+   the edges to create a picture-frame border effect. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 0.5s ease-out;
+  background-color: #ff2e8a;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.8  0 0 0 0 0.55  0 0 0 0 0.68  0 0 0 5 -2.8'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  background-blend-mode: multiply;
+  -webkit-mask-image: radial-gradient(ellipse 58% 58% at center, transparent 75%, black 100%);
+  mask-image: radial-gradient(ellipse 58% 58% at center, transparent 75%, black 100%);
+}
+
+body.scrolling::after {
+  opacity: 1;
+  transition: opacity 0.5s ease-out;
+}
+
+/* Corner text that fades in with the pink vignette. Same transition timing
+   so the type and the pink appear/disappear together. */
+.corners {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 10000;
+  opacity: 0;
+  filter: blur(45px);
+  transition: opacity 0.7s ease-out, filter 0.7s ease-out;
+  font-family: 'Nanum Myeongjo', serif;
+  font-weight: 400;
+  color: #ffffff;
+  font-size: clamp(3.6rem, 8vw, 6.5rem);
+  letter-spacing: 0.02em;
+  line-height: 1;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+body.scrolling .corners {
+  opacity: 1;
+  filter: blur(0);
+  transition: opacity 0.5s ease-out, filter 0.5s ease-out;
+}
+
+.corner {
+  position: absolute;
+  padding: 14px 22px;
+}
+.corner.tl { top: 0; left: 0; }
+.corner.tr { top: 0; right: 0; }
+.corner.bl { bottom: 0; left: 0; }
+.corner.br { bottom: 0; right: 0; }
+
+/* Intro copy pinned to the top-left. Fixed to viewport, sharp only when
+   you're near the very top of the page - blurs away the moment you scroll
+   past ~2% of the scrollable height. */
+.intro {
+  position: fixed;
+  top: 18px;
+  left: 22px;
+  max-width: clamp(340px, 26vw, 460px);
+  z-index: 10001;
+  color: #DA166E;
+  font-family: 'Nanum Myeongjo', serif;
+  font-weight: 400;
+  font-size: clamp(0.9rem, 0.98vw, 1.18rem);
+  line-height: 1.55;
+  letter-spacing: 0.01em;
+  user-select: none;
+  -webkit-user-select: none;
+  filter: blur(0);
+  opacity: 1;
+  transition: filter 0.5s ease-out, opacity 0.5s ease-out;
+}
+.intro p { margin: 0 0 0.7em; }
+.intro p:last-child { margin-bottom: 0; }
+.intro a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+.intro.hidden {
+  filter: blur(18px);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Other visitors' cursors: same soft blurry dot as the local cursor, just
+   coloured per user. Positioned in canvas coordinates so they appear at the
+   exact spot the other person is pointing on the shared canvas. */
+.remote-cursor {
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 5000;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.6s ease-out;
+}
+
+.remote-cursor.inactive {
+  opacity: 0;
+}
+
+/* Canvas keeps its true 1600 x CANVAS_HEIGHT coordinate system for sync;
+   the frame around it takes the *visual* (scaled) footprint so page scroll
+   sizes correctly. */
+#canvas-frame {
+  position: relative;
+  margin: 0 auto;
+}
+#canvas {
+  position: relative;
+  transform-origin: top left;
+}
+
+.photo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  cursor: var(--cursor-pink), grab;
+  touch-action: none;
+  user-select: none;
+  will-change: transform;
+}
+
+.photo.dragging {
+  cursor: var(--cursor-pink-grab), grabbing;
+}
+
+.photo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+  -webkit-user-drag: none;
+  border-radius: 2px;
+}

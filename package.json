@@ -1,0 +1,11 @@
+{
+  "name": "tutto",
+  "private": true,
+  "scripts": {
+    "dev": "partykit dev",
+    "deploy": "partykit deploy"
+  },
+  "devDependencies": {
+    "partykit": "latest"
+  }
+}
