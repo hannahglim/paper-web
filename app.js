@@ -54,7 +54,7 @@ const IMAGES = [
 const REALTIME = {
   host: location.hostname === "localhost" || location.hostname === "127.0.0.1"
     ? "localhost:1999"
-    : "paper-web.YOUR-PARTYKIT-USERNAME.partykit.dev",
+    : "paper-web.hannahglim.partykit.dev",
   room: "paper-web",
 };
 
