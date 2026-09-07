@@ -649,13 +649,31 @@ document.addEventListener("pointermove", (e) => {
   }, { passive: false });
 
   // Keep target in sync if the user scrolls via keyboard, scrollbar, or
-  // touch (anything that isn't the wheel we're intercepting).
+  // touch (anything that isn't the wheel we're intercepting). Mobile browsers
+  // don't fire `wheel`, so this path also drives the pink vignette on touch:
+  // detect scroll velocity from consecutive events and setPink accordingly,
+  // then a debounce timer flips it back off once scrolling stops.
+  let lastScrollY = window.scrollY;
+  let lastScrollTime = performance.now();
+  let scrollEndTimer = null;
   window.addEventListener("scroll", () => {
-    if (!running) {
-      targetY = window.scrollY;
-      currentY = window.scrollY;
+    if (running) return;
+    const now = performance.now();
+    const dy = window.scrollY - lastScrollY;
+    const dt = Math.max(1, now - lastScrollTime);
+    const velocityPerFrame = (Math.abs(dy) / dt) * 16;
+    lastScrollY = window.scrollY;
+    lastScrollTime = now;
+
+    targetY = window.scrollY;
+    currentY = window.scrollY;
+    setPink(velocityPerFrame >= FADE_VELOCITY);
+    updateIntro();
+
+    if (scrollEndTimer) clearTimeout(scrollEndTimer);
+    scrollEndTimer = setTimeout(() => {
       setPink(false);
       updateIntro();
-    }
+    }, 180);
   }, { passive: true });
 })();
