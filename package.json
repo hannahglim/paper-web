@@ -1,5 +1,5 @@
 {
-  "name": "tutto",
+  "name": "paper-web",
   "private": true,
   "scripts": {
     "dev": "partykit dev",

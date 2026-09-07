@@ -1,4 +1,4 @@
-// PartyKit server for tutto.
+// PartyKit server for paper-web.
 // Holds one global shared canvas: photo positions persisted via room storage,
 // plus live cursor positions kept in memory per connected user.
 
@@ -16,7 +16,7 @@ const CURSOR_COLORS = [
   "#7c1fda", // purple
 ];
 
-export default class TuttoServer {
+export default class PaperWebServer {
   constructor(room) {
     this.room = room;
     this.photos = {}; // { filename: { x, y, rot } }

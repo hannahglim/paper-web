@@ -54,8 +54,8 @@ const IMAGES = [
 const REALTIME = {
   host: location.hostname === "localhost" || location.hostname === "127.0.0.1"
     ? "localhost:1999"
-    : "tutto.YOUR-PARTYKIT-USERNAME.partykit.dev",
-  room: "tutto",
+    : "paper-web.YOUR-PARTYKIT-USERNAME.partykit.dev",
+  room: "paper-web",
 };
 
 const MIN_DISPLAY_WIDTH = 286;

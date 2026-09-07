@@ -1,6 +1,6 @@
 {
   "$schema": "https://www.partykit.io/schema.json",
-  "name": "tutto",
+  "name": "paper-web",
   "main": "party/server.js",
   "compatibilityDate": "2024-09-01"
 }
