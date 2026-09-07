@@ -100,10 +100,15 @@ canvas.style.height = CANVAS_HEIGHT + "px";
 
 // Scale the canvas up/down to fit the viewport width. Clamped so images stay
 // readable on smaller desktops and don't get absurd on ultrawide monitors.
+// Desktop viewports also get a 15% size bump so photos read bigger; mobile
+// keeps the tighter min scale so the whole layout still fits.
 const MIN_VIEW_SCALE = 0.7;
-const MAX_VIEW_SCALE = 1.3;
+const MAX_VIEW_SCALE = 1.5;
+const DESKTOP_BUMP = 1.15;
+const MOBILE_BREAKPOINT = 900;
 function applyResponsiveScale() {
-  viewScale = Math.min(MAX_VIEW_SCALE, Math.max(MIN_VIEW_SCALE, window.innerWidth / canvasWidth));
+  const base = Math.min(MAX_VIEW_SCALE, Math.max(MIN_VIEW_SCALE, window.innerWidth / canvasWidth));
+  viewScale = window.innerWidth < MOBILE_BREAKPOINT ? base : Math.min(MAX_VIEW_SCALE, base * DESKTOP_BUMP);
   canvas.style.transform = `scale(${viewScale})`;
   canvasFrame.style.width = (canvasWidth * viewScale) + "px";
   canvasFrame.style.height = (CANVAS_HEIGHT * viewScale) + "px";
